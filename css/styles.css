@@ -62,7 +62,12 @@ a {
   box-shadow: none;
 }
 
+.has-error .form-control:focus,
 .form-control:focus {
+  box-shadow: none;
+}
+
+.has-error .form-control {
   box-shadow: none;
 }
 
