@@ -97,6 +97,10 @@ a {
   background-color: #fff;
 }
 
+.input-lg {
+  height: 44px;
+}
+
 .has-feedback .form-control-feedback {
   top: 0;
   left: 0;
@@ -119,6 +123,11 @@ a {
   border-radius: 2px;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, .26);
   transition: background-color 0.2s ease-in-out;
+}
+
+.input-group-btn .btn {
+  border-radius: 4px;
+  box-shadow: none;
 }
 
 .btn-primary {
@@ -165,7 +174,6 @@ a {
   font-size: 14px;
 }
 
-
 .btn-instagram {
   color: #fff;
   background-color: #517fa4;
@@ -191,4 +199,12 @@ a {
 
 .media-heading:hover {
   color: #1c5380;
+}
+
+hr.soften {
+  height: 1px;
+  background-image: -webkit-linear-gradient(left, rgba(0,0,0,0), rgba(0,0,0,.1), rgba(0,0,0,0));
+  background-image: -moz-linear-gradient(left, rgba(0,0,0,0), rgba(0,0,0,.1), rgba(0,0,0,0));
+  background-image: -ms-linear-gradient(left, rgba(0,0,0,0), rgba(0,0,0,.1), rgba(0,0,0,0));
+  border: 0;
 }
