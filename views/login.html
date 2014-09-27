@@ -1,0 +1,37 @@
+<div class="container">
+    <div class="center-form panel">
+      <div class="panel-body">
+
+        <h3 class="text-center">Log in</h3>
+
+        <form method="post" ng-submit="emailLogin()" name="loginForm">
+          <div class="form-group has-feedback">
+            <input class="form-control input-lg" type="text" name="email" ng-model="email" placeholder="Email" required autofocus>
+            <span class="ion-at form-control-feedback"></span>
+          </div>
+
+          <div class="form-group has-feedback">
+            <input class="form-control input-lg" type="password" name="password" ng-model="password" placeholder="Password" required>
+            <span class="ion-key form-control-feedback"></span>
+          </div>
+
+          <button type="submit" class="btn btn-lg btn-block btn-success">Sign in</button>
+
+          <br/>
+
+          <p class="text-center text-muted">
+            <small>Don't have an account yet? <a href="#/signup">Sign up</a></small>
+          </p>
+
+          <div class="signup-or-separator">
+            <h6 class="text">or</h6>
+            <hr>
+          </div>
+        </form>
+
+        <button class="btn btn-lg btn-block btn-instagram" ng-click="instagramLogin()">
+          <i class="ion-social-instagram"></i> Login with Instagram
+        </button>
+      </div>
+    </div>
+</div>
