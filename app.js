@@ -14,6 +14,10 @@ angular.module('Instagram', ['ngRoute'])
         templateUrl: 'views/signup.html',
         controller: 'SignupCtrl'
       })
+      .when('/:photo_id', {
+        templateUrl: 'views/detail.html',
+        controller: 'DetailCtrl'
+      })
 
 
   });
