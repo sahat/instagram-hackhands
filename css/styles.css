@@ -55,25 +55,25 @@ a {
   box-shadow: 0 8px 17px rgba(0, 0, 0, .2);
 }
 
-.form-control {
+.center-form {
+  width: 315px;
+  margin: 12% auto;
+}
+
+.center-form .form-control {
   border-width: 0 0 1px;
   border-radius: 0;
   outline: none;
   box-shadow: none;
 }
 
-.has-error .form-control:focus,
+.center-form .has-error .form-control {
+  box-shadow: none;
+}
+
+.center-form .has-error .form-control:focus,
 .form-control:focus {
   box-shadow: none;
-}
-
-.has-error .form-control {
-  box-shadow: none;
-}
-
-.center-form {
-  width: 315px;
-  margin: 12% auto;
 }
 
 .signup-or-separator {
