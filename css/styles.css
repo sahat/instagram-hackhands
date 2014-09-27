@@ -41,17 +41,12 @@ a {
 
 .navbar-default {
   color: #fff;
-  background: #fff;
+  background: #5264ae;
 }
 
-.navbar-default .navbar-brand {
-  color: #333;
-  background-color: #ffe939;
-}
-
-.navbar-default .navbar-brand:hover {
-  color: #ffe939;
-  background-color: #333;
+.navbar-default .navbar-nav > li > a,
+.navbar-default .navbar-nav > li > a:hover {
+  color: #fff;
 }
 
 .navbar-brand {
@@ -129,7 +124,11 @@ a {
 }
 
 [class^='ion-'] {
+  padding-right: 5px;
   font-size: 1.2em;
+  vertical-align: middle;
+}
+[class^='ion-'] {
 }
 
 .has-feedback .form-control {
@@ -204,13 +203,6 @@ a {
   font-size: 14px;
 }
 
-.btn [class^='ion-'] {
-  margin-right: 5px;
-}
-
-.btn .fa {
-  margin-right: 5px;
-}
 
 .btn-instagram {
   color: #fff;
