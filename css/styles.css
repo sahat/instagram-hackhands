@@ -177,3 +177,18 @@ a {
   color: #fff;
   background-color: #303030;
 }
+
+.media-object {
+  width: 32px;
+  height: 32px;
+}
+
+.media-heading {
+  display: block;
+  margin: 0;
+  color: #3f729b;
+}
+
+.media-heading:hover {
+  color: #1c5380;
+}
