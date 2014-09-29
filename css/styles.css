@@ -18,6 +18,7 @@ a {
 
 .navbar {
   border: 0;
+  min-height: 50px;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, .26);
 }
 
@@ -39,41 +40,9 @@ a {
   padding: 15px;
 }
 
-.navbar-default {
-  color: #fff;
-  background: #5264ae;
-}
-
-.navbar-default .navbar-nav > li > a,
-.navbar-default .navbar-nav > li > a:hover {
-  color: #fff;
-}
-
-.panel {
-  border-color: #cfd9D7;
-  border-radius: 2px;
-  box-shadow: 0 8px 17px rgba(0, 0, 0, .2);
-}
-
 .center-form {
   width: 315px;
   margin: 12% auto;
-}
-
-.center-form .form-control {
-  border-width: 0 0 1px;
-  border-radius: 0;
-  outline: none;
-  box-shadow: none;
-}
-
-.center-form .has-error .form-control {
-  box-shadow: none;
-}
-
-.center-form .has-error .form-control:focus,
-.form-control:focus {
-  box-shadow: none;
 }
 
 .signup-or-separator {
@@ -97,10 +66,6 @@ a {
   background-color: #fff;
 }
 
-.input-lg {
-  height: 44px;
-}
-
 .has-feedback .form-control-feedback {
   top: 0;
   left: 0;
@@ -115,63 +80,7 @@ a {
 }
 
 .has-feedback .form-control {
-  padding-left: 42.5px;
-}
-
-.btn {
-  font-weight: bold;
-  border-radius: 2px;
-  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, .26);
-  transition: background-color 0.2s ease-in-out;
-}
-
-.input-group-btn .btn {
-  border-radius: 4px;
-  box-shadow: none;
-}
-
-.btn-primary {
-  background-color: #4285f4;
-}
-
-.btn-primary:hover {
-  background-color: #3367d6;
-}
-
-.btn-success {
-  background-color: #0f9d58;
-}
-
-.btn-success:hover {
-  background-color: #196c4a;
-}
-
-.btn-danger {
-  background-color: #db4437;
-}
-
-.btn-danger:hover {
-  background-color: #b04c3b;
-}
-
-.btn-group-vertical .btn {
-  margin-bottom: 10px;
-}
-
-.btn-group-vertical > .btn:first-child:not(:last-child) {
-  border-radius: 2px;
-}
-
-.btn-group-vertical > .btn:not(:first-child):not(:last-child) {
-  border-radius: 2px;
-}
-
-.btn-group-vertical > .btn:last-child:not(:first-child) {
-  border-radius: 2px;
-}
-
-.btn-lg {
-  font-size: 14px;
+  padding-left: 42px;
 }
 
 .btn-instagram {
