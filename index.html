@@ -15,9 +15,9 @@
 <div class="navbar navbar-inverse navbar-static-top">
   <ul class="nav navbar-nav">
     <li><a href="#/">Home</a></li>
-    <li><a href="#/login">Login</a></li>
-    <li><a href="#/signup">Sign up</a></li>
-    <li><a href="#/logout">Logout</a></li>
+    <li ng-if="!isAuthenticated()"><a href="#/login">Log in</a></li>
+    <li ng-if="!isAuthenticated()"><a href="#/signup">Sign up</a></li>
+    <li ng-if="isAuthenticated()"><a href="#/logout">Logout</a></li>
   </ul>
 </div>
 
