@@ -12,12 +12,22 @@
 <body>
 
 <div ng-controller="NavbarCtrl" class="navbar navbar-inverse navbar-static-top">
-  <ul class="nav navbar-nav">
-    <li><a href="#/">Home</a></li>
-    <li ng-if="!isAuthenticated()"><a href="#/login">Log in</a></li>
-    <li ng-if="!isAuthenticated()"><a href="#/signup">Sign up</a></li>
-    <li ng-if="isAuthenticated()"><a ng-click="logout()" href="">Logout</a></li>
-  </ul>
+  <div class="container">
+    <ul class="nav navbar-nav">
+      <li><a href="#/">Home</a></li>
+      <li ng-if="!isAuthenticated()"><a href="#/login">Log in</a></li>
+      <li ng-if="!isAuthenticated()"><a href="#/signup">Sign up</a></li>
+      <li ng-if="isAuthenticated()"><a ng-click="logout()" href="">Logout</a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <li ng-if="isAuthenticated()">
+        <a href="http://instagram.com/13reasons">
+          <img class="media-object img-rounded" src="http://images.ak.instagram.com/profiles/profile_6321489_75sq_1374512486.jpg">
+          @13reasons
+        </a>
+      </li>
+    </ul>
+  </div>
 </div>
 
 <div ng-view></div>

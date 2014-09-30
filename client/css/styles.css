@@ -31,7 +31,13 @@ a {
 }
 
 .navbar-nav > li > a {
-  padding: 15px;
+  padding: 0 15px;
+  line-height: 50px;
+}
+
+.navbar-text {
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .center-form {
@@ -90,6 +96,7 @@ a {
 }
 
 .media-object {
+  display: inline-block;
   width: 32px;
   height: 32px;
 }
