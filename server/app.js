@@ -96,7 +96,10 @@ app.post('/auth/instagram', function(req, res) {
 
       user.save(function() {
         var token = createToken(user);
-        res.send({ token: token });
+        res.send({
+          token: token,
+          user: user
+        });
       });
     });
   });
