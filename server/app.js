@@ -76,27 +76,27 @@ app.post('/auth/instagram', function(req, res) {
     client_id: req.body.clientId,
     redirect_uri: req.body.redirectUri,
     client_secret: config.clientSecret,
-    code: req.body.code
+    code: req.body.code,
+    grant_type: 'authorization_code'
   };
 
-  request.get({ url: accessTokenUrl, qs: params, json: true }, function(err, response, body) {
-    console.log(body);
-    var accessToken = body.access_token;
-    var userId = body.user.id;
-    var username = body.user.username;
-    var fullName = body.user.full_name;
-    var picture = body.user.profile_picture;
-
-    User.findById(userId, function(err, existingUser) {
+  request.post({ url: accessTokenUrl, form: params, json: true }, function(err, response, body) {
+    User.findOne({ id: body.user.id }, function(err, existingUser) {
       if (existingUser) {
-        return res.send({ token: createToken(req, existingUser) });
+        var token = createToken(existingUser);
+        return res.send({ token: token });
       }
 
-      var user = new User();
-      user.facebook = profile.id;
-      user.displayName = profile.name;
-      user.save(function(err) {
-        res.send({ token: createToken(req, user) });
+      var user = new User({
+        id: body.user.id,
+        username: body.user.username,
+        fullName: body.user.full_name,
+        picture: body.user.profile_picture
+      });
+
+      user.save(function() {
+        var token = createToken(user);
+        res.send({ token: token });
       });
     });
   });
