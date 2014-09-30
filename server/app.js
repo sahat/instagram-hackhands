@@ -6,6 +6,7 @@ var request = require('request');
 var jwt = require('jwt-simple');
 var mongoose = require('mongoose');
 var moment = require('moment');
+var cors = require('cors');
 
 var config = require('./config');
 
@@ -22,21 +23,11 @@ mongoose.connect(config.db);
 var app = express();
 
 app.set('port', process.env.PORT || 3000);
+app.use(cors());
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
-
-/*
- |--------------------------------------------------------------------------
- | Enable CORS
- |--------------------------------------------------------------------------
- */
-app.all('*', function(req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type');
-  next();
-});
 
 /*
  |--------------------------------------------------------------------------
@@ -79,7 +70,6 @@ function createToken(user) {
  |--------------------------------------------------------------------------
  */
 app.post('/auth/instagram', function(req, res) {
-  console.log('hi');
   var accessTokenUrl = 'https://api.instagram.com/oauth/access_token';
 
   var params = {
@@ -89,11 +79,8 @@ app.post('/auth/instagram', function(req, res) {
     code: req.body.code
   };
 
-  request.get({
-    url: accessTokenUrl,
-    qs: params,
-    json: true
-  }, function(err, response, body) {
+  request.get({ url: accessTokenUrl, qs: params, json: true }, function(err, response, body) {
+    console.log(body);
     var accessToken = body.access_token;
     var userId = body.user.id;
     var username = body.user.username;
@@ -114,8 +101,6 @@ app.post('/auth/instagram', function(req, res) {
     });
   });
 });
-
-
 
 app.listen(app.get('port'), function() {
   console.log('Express server listening on port ' + app.get('port'));
