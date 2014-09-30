@@ -12,6 +12,8 @@ var config = require('./config');
 
 var User = mongoose.model('User', new mongoose.Schema({
   id: Number,
+  email: { type: String, unique: true, lowercase: true },
+  password: { type: String, select: false },
   username: String,
   fullName: String,
   picture: String,
@@ -63,6 +65,29 @@ function createToken(user) {
   };
   return jwt.encode(payload, config.tokenSecret);
 }
+
+/*
+ |--------------------------------------------------------------------------
+ | Sign in with Email
+ |--------------------------------------------------------------------------
+ */
+app.post('/auth/login', function(req, res) {
+  User.findOne({ email: req.body.email }, '+password', function(err, user) {
+    if (!user) {
+      return res.status(401).send({ message: 'Wrong email and/or password' });
+    }
+
+    user.comparePassword(req.body.password, function(err, isMatch) {
+      if (!isMatch) {
+        return res.status(401).send({ message: 'Wrong email and/or password' });
+      }
+      res.send({
+        token: createToken(user),
+        user: user
+      });
+    });
+  });
+});
 
 /*
  |--------------------------------------------------------------------------
