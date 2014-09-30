@@ -1,4 +1,5 @@
 module.exports = {
   db: 'localhost',
-  clientSecret: process.env.clientSecret || 'fe37bba0d2424c1ea61db7236b8e2154'
+  clientSecret: process.env.clientSecret || '46d6cc16b2fa445595e747a3349cb6e4',
+  tokenSecret: process.env.tokenSecret || 'some hard to guess string'
 };
