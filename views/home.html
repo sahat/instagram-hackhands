@@ -1,73 +1,82 @@
 <div class="container">
 
-  <h2>6-4-3 grid example<p class="lead">6 columns on desktop, 4 columns on tablets, 3 columns on phones</p></h2>
-  <div class="row">
-    <div class="col-lg-2 col-sm-3 col-xs-4">
-      <a href="#/1">
-        <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
-      </a>
+  <div ng-if="isAuthenticated()">
+    <div class="row">
+      <div class="col-lg-2 col-sm-3 col-xs-4">
+        <a href="#/1">
+          <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
+        </a>
+      </div>
+      <div class="col-lg-2 col-sm-3 col-xs-4">
+        <a href="#/2">
+          <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
+        </a>
+      </div>
+      <div class="col-lg-2 col-sm-3 col-xs-4">
+        <a href="#/3">
+          <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
+        </a>
+      </div>
+      <div class="col-lg-2 col-sm-3 col-xs-4">
+        <a href="#/4">
+          <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
+        </a>
+      </div>
+      <div class="col-lg-2 col-sm-3 col-xs-4">
+        <a href="#/5">
+          <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
+        </a>
+      </div>
+      <div class="col-lg-2 col-sm-3 col-xs-4">
+        <a href="#/6">
+          <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
+        </a>
+      </div>
+      <div class="col-lg-2 col-sm-3 col-xs-4">
+        <a href="#/7">
+          <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
+        </a>
+      </div>
+      <div class="col-lg-2 col-sm-3 col-xs-4">
+        <a href="#/8">
+          <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
+        </a>
+      </div>
+      <div class="col-lg-2 col-sm-3 col-xs-4">
+        <a href="#/9">
+          <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
+        </a>
+      </div>
+      <div class="col-lg-2 col-sm-3 col-xs-4">
+        <a href="#/10">
+          <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
+        </a>
+      </div>
+      <div class="col-lg-2 col-sm-3 col-xs-4">
+        <a href="#/11">
+          <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
+        </a>
+      </div>
+      <div class="col-lg-2 col-sm-3 col-xs-4">
+        <a href="#/12">
+          <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
+        </a>
+      </div>
     </div>
-    <div class="col-lg-2 col-sm-3 col-xs-4">
-      <a href="#/2">
-        <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
-      </a>
+
+    <div class="text-center">
+      <button class="btn btn-default">Load More</button>
     </div>
-    <div class="col-lg-2 col-sm-3 col-xs-4">
-      <a href="#/3">
-        <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
-      </a>
-    </div>
-    <div class="col-lg-2 col-sm-3 col-xs-4">
-      <a href="#/4">
-        <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
-      </a>
-    </div>
-    <div class="col-lg-2 col-sm-3 col-xs-4">
-      <a href="#/5">
-        <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
-      </a>
-    </div>
-    <div class="col-lg-2 col-sm-3 col-xs-4">
-      <a href="#/6">
-        <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
-      </a>
-    </div>
-    <div class="col-lg-2 col-sm-3 col-xs-4">
-      <a href="#/7">
-        <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
-      </a>
-    </div>
-    <div class="col-lg-2 col-sm-3 col-xs-4">
-      <a href="#/8">
-        <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
-      </a>
-    </div>
-    <div class="col-lg-2 col-sm-3 col-xs-4">
-      <a href="#/9">
-        <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
-      </a>
-    </div>
-    <div class="col-lg-2 col-sm-3 col-xs-4">
-      <a href="#/10">
-        <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
-      </a>
-    </div>
-    <div class="col-lg-2 col-sm-3 col-xs-4">
-      <a href="#/11">
-        <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
-      </a>
-    </div>
-    <div class="col-lg-2 col-sm-3 col-xs-4">
-      <a href="#/12">
-        <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
-      </a>
-    </div>
+
+    <br/>
   </div>
 
-  <div class="text-center">
-    <button class="btn btn-default">Load More</button>
+  <div ng-if="!isAuthenticated()">
+    <div class="jumbotron">
+      <h2><i class="ion-social-instagram-outline"></i> Instagram</h2>
+      <p>This is a basic Instagram clone powered by <strong>Satellizer</strong>. To continue, please log in with your Instagram account.</p>
+      <p><a class="btn btn-primary btn-lg">Sign in</a></p>
+    </div>
   </div>
-
-  <br/>
 
 </div>
