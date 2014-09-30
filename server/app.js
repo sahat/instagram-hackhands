@@ -7,6 +7,7 @@ var jwt = require('jwt-simple');
 var mongoose = require('mongoose');
 var moment = require('moment');
 var cors = require('cors');
+var bcrypt = require('bcryptjs');
 
 var config = require('./config');
 
@@ -74,13 +75,17 @@ function createToken(user) {
 app.post('/auth/login', function(req, res) {
   User.findOne({ email: req.body.email }, '+password', function(err, user) {
     if (!user) {
-      return res.status(401).send({ message: 'Wrong email and/or password' });
+      return res.status(401).send({ message: 'Incorrect email and/or password' });
     }
 
-    user.comparePassword(req.body.password, function(err, isMatch) {
+    bcrypt.compare(req.body.password, user.password, function(err, isMatch) {
       if (!isMatch) {
-        return res.status(401).send({ message: 'Wrong email and/or password' });
+        return res.status(401).send({ message: 'Incorrect email and/or password' });
       }
+
+      user = user.toObject();
+      delete user.password;
+
       res.send({
         token: createToken(user),
         user: user
