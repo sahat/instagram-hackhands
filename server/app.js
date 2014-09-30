@@ -10,15 +10,11 @@ var moment = require('moment');
 var config = require('./config');
 
 var User = mongoose.model('User', new mongoose.Schema({
-  email: { type: String, unique: true, lowercase: true },
-  password: { type: String, select: false },
-  displayName: String,
-  facebook: String,
-  foursquare: String,
-  google: String,
-  github: String,
-  linkedin: String,
-  twitter: String
+  id: Number,
+  username: String,
+  fullName: String,
+  picture: String,
+  accessToken: String
 }));
 
 mongoose.connect(config.db);
@@ -57,16 +53,14 @@ function ensureAuthenticated(req, res, next) {
  | Generate JSON Web Token
  |--------------------------------------------------------------------------
  */
-function createToken(req, user) {
+function createToken(user) {
   var payload = {
-    iss: req.hostname,
-    sub: user._id,
+    sub: user.id,
     iat: moment().unix(),
     exp: moment().add(14, 'days').unix()
   };
-  return jwt.encode(payload, config.TOKEN_SECRET);
+  return jwt.encode(payload, config.tokenSecret);
 }
-
 
 /*
  |--------------------------------------------------------------------------
@@ -74,6 +68,7 @@ function createToken(req, user) {
  |--------------------------------------------------------------------------
  */
 app.post('/auth/instagram', function(req, res) {
+  console.log('hi');
   var accessTokenUrl = 'https://api.instagram.com/oauth/access_token';
 
   var params = {
@@ -109,17 +104,6 @@ app.post('/auth/instagram', function(req, res) {
   });
 });
 
-/*
- |--------------------------------------------------------------------------
- | Enable CORS
- |--------------------------------------------------------------------------
- */
-app.all('/*', function(req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'X-Requested-With');
-  res.header('Access-Control-Allow-Methods', 'GET, POST', 'PUT');
-  next();
-});
 
 
 app.listen(app.get('port'), function() {
