@@ -108,9 +108,15 @@ app.post('/auth/signup', function(req, res) {
       password: req.body.password
     });
 
-    user.save(function() {
-      var token = createToken(user);
-      res.send({ token: token, user: user });
+    bcrypt.genSalt(10, function(err, salt) {
+      bcrypt.hash(user.password, salt, function(err, hash) {
+        user.password = hash;
+
+        user.save(function() {
+          var token = createToken(user);
+          res.send({ token: token, user: user });
+        });
+      });
     });
   });
 });
