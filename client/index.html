@@ -11,12 +11,12 @@
 </head>
 <body>
 
-<div class="navbar navbar-inverse navbar-static-top">
+<div ng-controller="NavbarCtrl" class="navbar navbar-inverse navbar-static-top">
   <ul class="nav navbar-nav">
     <li><a href="#/">Home</a></li>
     <li ng-if="!isAuthenticated()"><a href="#/login">Log in</a></li>
     <li ng-if="!isAuthenticated()"><a href="#/signup">Sign up</a></li>
-    <li ng-if="isAuthenticated()"><a href="#/logout">Logout</a></li>
+    <li ng-if="isAuthenticated()"><a ng-click="logout()" href="">Logout</a></li>
   </ul>
 </div>
 
@@ -24,9 +24,11 @@
 
 <script src="vendor/angular.js"></script>
 <script src="vendor/angular-route.js"></script>
+<script src="vendor/satellizer.js"></script>
 
 <script src="app.js"></script>
 <script src="controllers/home.js"></script>
+<script src="controllers/navbar.js"></script>
 <script src="controllers/login.js"></script>
 <script src="controllers/signup.js"></script>
 <script src="controllers/detail.js"></script>

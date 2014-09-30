@@ -3,4 +3,8 @@ angular.module('Instagram')
     $scope.isAuthenticated = function() {
       return $auth.isAuthenticated();
     };
+
+    $scope.logout = function() {
+      $auth.logout();
+    };
   });
