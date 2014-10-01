@@ -13,9 +13,6 @@ angular.module('Instagram', ['ngRoute', 'ngMessages', 'ngDialog', 'satellizer'])
         templateUrl: 'views/signup.html',
         controller: 'SignupCtrl'
       })
-      .when('/connect', {
-        templateUrl: 'views/connect.html'
-      })
       .when('/:photo_id', {
         templateUrl: 'views/detail.html',
         controller: 'DetailCtrl'

@@ -1,6 +1,6 @@
 <div class="container">
 
-  <div ng-if="isAuthenticated()">
+  <div ng-if="isAuthenticated() && currentUser.username">
     <div class="row">
       <div class="col-lg-2 col-sm-3 col-xs-4">
         <a href="#/1">
@@ -79,6 +79,16 @@
         <a class="btn btn-lg btn-success" href="#/login"><i class="ion-log-in"></i> Log in</a>
         <a class="btn btn-lg btn-primary" href="#/signup"><i class="ion-person-add"></i> Create account</a>
       </p>
+    </div>
+  </div>
+
+  <div ng-if="isAuthenticated() && !currentUser.username" class="center-form panel">
+    <div class="panel-body">
+      <h5 class="text-center"><i class="ion-link"></i> Link Account</h5>
+      <p>To complete the registration process you must link your Instagram account.</p>
+      <button class="btn btn-block btn-instagram" ng-click="instagramLogin()">
+        <i class="ion-social-instagram"></i> Sign in with Instagram
+      </button>
     </div>
   </div>
 
