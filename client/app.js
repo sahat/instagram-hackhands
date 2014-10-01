@@ -13,14 +13,20 @@ angular.module('Instagram', ['ngRoute', 'ngMessages', 'ngDialog', 'satellizer'])
         templateUrl: 'views/signup.html',
         controller: 'SignupCtrl'
       })
+      .when('/connect', {
+        templateUrl: 'views/connect.html'
+      })
       .when('/:photo_id', {
         templateUrl: 'views/detail.html',
         controller: 'DetailCtrl'
       })
+
       .otherwise('/');
 
+    $authProvider.loginOnSignup = false;
     $authProvider.loginUrl = 'http://localhost:3000/auth/login';
     $authProvider.signupUrl = 'http://localhost:3000/auth/signup';
+
 
     $authProvider.oauth2({
       name: 'instagram',
