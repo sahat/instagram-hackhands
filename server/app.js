@@ -12,7 +12,7 @@ var bcrypt = require('bcryptjs');
 var config = require('./config');
 
 var User = mongoose.model('User', new mongoose.Schema({
-  id: Number,
+  id: { type: Number, index: true },
   email: { type: String, unique: true, lowercase: true },
   password: { type: String, select: false },
   username: String,
@@ -75,12 +75,12 @@ function createToken(user) {
 app.post('/auth/login', function(req, res) {
   User.findOne({ email: req.body.email }, '+password', function(err, user) {
     if (!user) {
-      return res.status(401).send({ message: 'Incorrect email and/or password' });
+      return res.status(401).send({ message: { email: 'Incorrect email' } });
     }
 
     bcrypt.compare(req.body.password, user.password, function(err, isMatch) {
       if (!isMatch) {
-        return res.status(401).send({ message: 'Incorrect email and/or password' });
+        return res.status(401).send({ message: { password: 'Incorrect password' } });
       }
 
       user = user.toObject();
@@ -141,7 +141,7 @@ app.post('/auth/instagram', function(req, res) {
     User.findOne({ id: body.user.id }, function(err, existingUser) {
       if (existingUser) {
         var token = createToken(existingUser);
-        return res.send({ token: token });
+        return res.send({ token: token, user: existingUser });
       }
 
       var user = new User({
