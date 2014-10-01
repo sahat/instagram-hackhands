@@ -1,11 +1,17 @@
 angular.module('Instagram')
-  .controller('SignupCtrl', function($scope, $auth) {
+  .controller('SignupCtrl', function($scope, $location, $auth) {
     $scope.signup = function() {
-      $auth.signup({
+      var user = {
         email: $scope.email,
         password: $scope.password
-      }).catch(function(response) {
-        console.log(response.data);
-      });
+      };
+
+      $auth.signup(user)
+        .then(function(response) {
+          $location.path('/connect');
+        })
+        .catch(function(response) {
+          console.log(response.data);
+        });
     };
   });

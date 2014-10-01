@@ -1,5 +1,5 @@
 angular.module('Instagram')
-  .controller('LoginCtrl', function($scope, $rootScope, $auth) {
+  .controller('LoginCtrl', function($scope, $location, $rootScope, $auth) {
     $scope.instagramLogin = function() {
       $auth.authenticate('instagram')
         .then(function(response) {
@@ -13,7 +13,13 @@ angular.module('Instagram')
     $scope.emailLogin = function() {
       $auth.login({ email: $scope.email, password: $scope.password })
         .then(function(response) {
-          $rootScope.currentUser = response.data.user
+          var user = response.data.user;
+
+          if (!user.username) {
+            return $location.path('/connect');
+          }
+
+          $rootScope.currentUser = user;
         })
         .catch(function(response) {
           $scope.errorMessage = {};
