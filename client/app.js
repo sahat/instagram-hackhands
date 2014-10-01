@@ -19,6 +19,8 @@ angular.module('Instagram', ['ngRoute', 'ngDialog', 'satellizer'])
       })
       .otherwise('/');
 
+    $authProvider.loginUrl = 'http://localhost:3000/auth/login';
+
     $authProvider.oauth2({
       name: 'instagram',
       url: 'http://localhost:3000/auth/instagram',
