@@ -6,6 +6,7 @@
     "start": "node app.js"
   },
   "dependencies": {
+    "bcryptjs": "^2.0.2",
     "body-parser": "^1.8.1",
     "cors": "^2.4.2",
     "express": "^4.9.0",
