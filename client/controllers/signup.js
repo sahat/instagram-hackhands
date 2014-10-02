@@ -8,7 +8,7 @@ angular.module('Instagram')
 
       $auth.signup(user)
         .then(function(response) {
-          $location.path('/connect');
+
         })
         .catch(function(response) {
           console.log(response.data);
