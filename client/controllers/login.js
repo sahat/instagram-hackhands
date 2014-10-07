@@ -1,10 +1,10 @@
 angular.module('Instagram')
-  .controller('LoginCtrl', function($scope, $location, $rootScope, $auth) {
+  .controller('LoginCtrl', function($scope, $window, $location, $rootScope, $auth) {
     $scope.instagramLogin = function() {
       $auth.authenticate('instagram')
         .then(function(response) {
-          console.log(response.data.user);
-          $rootScope.currentUser = response.data.user
+          $window.localStorage.currentUser = JSON.stringify(response.data.user);
+          $rootScope.currentUser = JSON.parse($window.localStorage.currentUser);
         })
         .catch(function(response) {
           console.log(response.data);
@@ -14,7 +14,8 @@ angular.module('Instagram')
     $scope.emailLogin = function() {
       $auth.login({ email: $scope.email, password: $scope.password })
         .then(function(response) {
-          $rootScope.currentUser = response.data.user;
+          $window.localStorage.currentUser = JSON.stringify(response.data.user);
+          $rootScope.currentUser = JSON.parse($window.localStorage.currentUser);
         })
         .catch(function(response) {
           $scope.errorMessage = {};
