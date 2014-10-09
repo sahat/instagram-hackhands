@@ -14,10 +14,8 @@ angular.module('Instagram')
       });
     };
 
-
-    var id = $location.path().substring(1);
-
-    API.getMediaById(id).success(function(data) {
+    API.getMediaById($location.path()).success(function(data) {
+      console.log(data);
       $scope.photo = data;
     });
 
