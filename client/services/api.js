@@ -3,7 +3,7 @@ angular.module('Instagram')
 
     return {
       getFeed: function() {
-        return $http.get('/api/feed');
+        return $http.get('http://localhost:3000/api/feed');
       }
     }
 

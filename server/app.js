@@ -54,6 +54,7 @@ function isAuthenticated(req, res, next) {
   }
 
   User.findOne({ id: payload.id }, function(err, user) {
+    console.log('getting id')
     req.user = user;
     next();
   })
@@ -168,10 +169,12 @@ app.post('/auth/instagram', function(req, res) {
 
 app.get('/api/feed', isAuthenticated, function(req, res, next) {
   var feedUrl = 'https://api.instagram.com/v1/users/self/feed';
-  console.log(req.user);
+  var params = { access_token: req.user.accessToken };
 
-  request.get({ url: feedUrl, qs: { acces_token: user.accessToken } }, function(e, r, body) {
-
+  request.get({ url: feedUrl, qs: params, json: true }, function(error, response, body) {
+    if (!error && response.statusCode == 200) {
+      res.send(body.data);
+    }
   });
 });
 

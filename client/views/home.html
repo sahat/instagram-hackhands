@@ -1,67 +1,15 @@
 <div class="container">
 
   <div ng-if="isAuthenticated() && currentUser.username">
+
     <div class="row">
-      <div class="col-lg-2 col-sm-3 col-xs-4">
-        <a href="#/1">
-          <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
+
+      <div ng-repeat="photo in photos" class="col-lg-2 col-sm-3 col-xs-4">
+        <a href="#/{{photo.id}}">
+          <img ng-src="{{photo.images.standard_resolution.url}}" class="thumbnail img-responsive">
         </a>
       </div>
-      <div class="col-lg-2 col-sm-3 col-xs-4">
-        <a href="#/2">
-          <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
-        </a>
-      </div>
-      <div class="col-lg-2 col-sm-3 col-xs-4">
-        <a href="#/3">
-          <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
-        </a>
-      </div>
-      <div class="col-lg-2 col-sm-3 col-xs-4">
-        <a href="#/4">
-          <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
-        </a>
-      </div>
-      <div class="col-lg-2 col-sm-3 col-xs-4">
-        <a href="#/5">
-          <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
-        </a>
-      </div>
-      <div class="col-lg-2 col-sm-3 col-xs-4">
-        <a href="#/6">
-          <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
-        </a>
-      </div>
-      <div class="col-lg-2 col-sm-3 col-xs-4">
-        <a href="#/7">
-          <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
-        </a>
-      </div>
-      <div class="col-lg-2 col-sm-3 col-xs-4">
-        <a href="#/8">
-          <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
-        </a>
-      </div>
-      <div class="col-lg-2 col-sm-3 col-xs-4">
-        <a href="#/9">
-          <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
-        </a>
-      </div>
-      <div class="col-lg-2 col-sm-3 col-xs-4">
-        <a href="#/10">
-          <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
-        </a>
-      </div>
-      <div class="col-lg-2 col-sm-3 col-xs-4">
-        <a href="#/11">
-          <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
-        </a>
-      </div>
-      <div class="col-lg-2 col-sm-3 col-xs-4">
-        <a href="#/12">
-          <img src="http://placehold.it/200x200" class="thumbnail img-responsive">
-        </a>
-      </div>
+
     </div>
 
     <div class="text-center">
