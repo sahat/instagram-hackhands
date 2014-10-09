@@ -39,18 +39,24 @@ app.use(express.static(path.join(__dirname, 'public')));
  */
 function isAuthenticated(req, res, next) {
   if (!req.headers.authorization) {
-    return res.status(401).send({ message: 'Please make sure your request has an Authorization header' });
+    res.status(401).send({
+      code: 401,
+      message: 'You did not provide a JSON Web Token in the Authorization header.'
+    });
   }
 
   var token = req.headers.authorization.split(' ')[1];
-  var payload = jwt.decode(token, config.TOKEN_SECRET);
+  var payload = jwt.decode(token, config.tokenSecret);
+  var now = moment().unix();
 
-  if (payload.exp <= moment().unix()) {
+  if (now > payload.exp) {
     return res.status(401).send({ message: 'Token has expired' });
   }
 
-  req.user = payload.sub;
-  next();
+  User.findOne({ id: payload.id }, function(err, user) {
+    req.user = user;
+    next();
+  })
 }
 
 /*
@@ -60,9 +66,9 @@ function isAuthenticated(req, res, next) {
  */
 function createToken(user) {
   var payload = {
-    sub: user.id,
     iat: moment().unix(),
-    exp: moment().add(14, 'days').unix()
+    exp: moment().add(14, 'days').unix(),
+    id: user.id
   };
   return jwt.encode(payload, config.tokenSecret);
 }
@@ -137,8 +143,7 @@ app.post('/auth/instagram', function(req, res) {
     grant_type: 'authorization_code'
   };
 
-  request.post({ url: accessTokenUrl, form: params, json: true }, function(err, response, body) {
-    console.log(body);
+  request.post({ url: accessTokenUrl, form: params, json: true }, function(e, r, body) {
     User.findOne({ id: body.user.id }, function(err, existingUser) {
       if (existingUser) {
         var token = createToken(existingUser);
@@ -162,7 +167,12 @@ app.post('/auth/instagram', function(req, res) {
 });
 
 app.get('/api/feed', isAuthenticated, function(req, res, next) {
-  var feedUrl = 'https://api.instagram.com/v1/users/self/feed?access_token=6321489.f59def8.5ceb23cbbb664eef927df559469b663c';
+  var feedUrl = 'https://api.instagram.com/v1/users/self/feed';
+  console.log(req.user);
+
+  request.get({ url: feedUrl, qs: { acces_token: user.accessToken } }, function(e, r, body) {
+
+  });
 });
 
 
