@@ -3,7 +3,11 @@ body {
 }
 
 a {
-  color: #000;
+  color: #3f729b;
+}
+
+a:hover {
+  color: #1c5380;
 }
 
 .text-muted {
