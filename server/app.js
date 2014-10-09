@@ -37,7 +37,7 @@ app.use(express.static(path.join(__dirname, 'public')));
  | Login Required Middleware
  |--------------------------------------------------------------------------
  */
-function ensureAuthenticated(req, res, next) {
+function isAuthenticated(req, res, next) {
   if (!req.headers.authorization) {
     return res.status(401).send({ message: 'Please make sure your request has an Authorization header' });
   }
@@ -138,6 +138,7 @@ app.post('/auth/instagram', function(req, res) {
   };
 
   request.post({ url: accessTokenUrl, form: params, json: true }, function(err, response, body) {
+    console.log(body);
     User.findOne({ id: body.user.id }, function(err, existingUser) {
       if (existingUser) {
         var token = createToken(existingUser);
@@ -148,7 +149,8 @@ app.post('/auth/instagram', function(req, res) {
         id: body.user.id,
         username: body.user.username,
         fullName: body.user.full_name,
-        picture: body.user.profile_picture
+        picture: body.user.profile_picture,
+        accessToken: body.access_token
       });
 
       user.save(function() {
@@ -158,6 +160,12 @@ app.post('/auth/instagram', function(req, res) {
     });
   });
 });
+
+app.get('/api/feed', isAuthenticated, function(req, res, next) {
+  var feedUrl = 'https://api.instagram.com/v1/users/self/feed?access_token=6321489.f59def8.5ceb23cbbb664eef927df559469b663c';
+});
+
+
 
 app.listen(app.get('port'), function() {
   console.log('Express server listening on port ' + app.get('port'));
