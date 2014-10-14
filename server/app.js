@@ -53,8 +53,8 @@ function isAuthenticated(req, res, next) {
     return res.status(401).send({ message: 'Token has expired' });
   }
 
-  User.findOne({ id: payload.id }, function(err, user) {
-    console.log('getting id')
+  User.findOne({ id: payload.sub, email: payload.sub }, function(err, user) {
+    console.log('getting id');
     req.user = user;
     next();
   })
@@ -67,10 +67,11 @@ function isAuthenticated(req, res, next) {
  */
 function createToken(user) {
   var payload = {
-    iat: moment().unix(),
     exp: moment().add(14, 'days').unix(),
-    id: user.id
+    iat: moment().unix(),
+    sub: user.id || user.email
   };
+
   return jwt.encode(payload, config.tokenSecret);
 }
 
