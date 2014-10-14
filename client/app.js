@@ -1,4 +1,4 @@
-angular.module('Instagram', ['ngRoute', 'ngMessages', 'ngDialog', 'satellizer'])
+angular.module('Instagram', ['ngRoute', 'ngMessages', 'satellizer'])
   .config(function($routeProvider, $authProvider) {
     $routeProvider
       .when('/', {
