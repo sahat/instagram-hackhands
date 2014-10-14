@@ -41,7 +41,11 @@
           <hr class="soften">
 
           <div class="btn-group">
-            <button class="btn btn-default" ng-click="like()"><i class="ion-heart text-danger"></i> Like</button>
+            <button class="btn btn-default" ng-class="{ 'btn-liked': hasLiked }" ng-click="like()">
+              <i class="ion-heart text-danger"></i>
+              <span ng-if="hasLiked">Liked</span>
+              <span ng-if="!hasLiked">Like</span>
+            </button>
             <button class="btn btn-default" ng-click="showCommentDialog()"><i class="ion-android-forums text-primary"></i> Comment</button>
           </div>
 
