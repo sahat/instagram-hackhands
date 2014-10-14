@@ -1,6 +1,8 @@
 angular.module('Instagram')
   .controller('DetailCtrl', function($scope, $location, ngDialog, API) {
 
+    var mediaId = $location.path().split('/').pop();
+
     $scope.showCommentDialog = function() {
       ngDialog.open({
         template: '<form ng-submit="postComment()">' +
@@ -14,9 +16,14 @@ angular.module('Instagram')
       });
     };
 
-    API.getMediaById($location.path().split('/').pop()).success(function(data) {
-      console.log(data);
+    API.getMediaById(mediaId).success(function(data) {
       $scope.photo = data;
     });
+
+    $scope.like = function() {
+      API.likeMedia(mediaId).success(function(data) {
+        alert('liked');
+      });
+    };
 
   });

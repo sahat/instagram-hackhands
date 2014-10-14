@@ -246,8 +246,8 @@ app.post('/api/like', isAuthenticated, function(req, res, next) {
   var likeUrl = 'https://api.instagram.com/v1/media/' + mediaId  + '/likes';
 
   request.post({ url: likeUrl, form: { access_token: req.user.accessToken } }, function(e, r, body) {
-    if (!error && response.statusCode == 200) {
-      res.end(200);
+    if (!e && r.statusCode == 200) {
+      res.status(200).end();
     }
   });
 });
