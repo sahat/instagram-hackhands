@@ -145,25 +145,54 @@ app.post('/auth/instagram', function(req, res) {
   };
 
   request.post({ url: accessTokenUrl, form: params, json: true }, function(e, r, body) {
-    User.findOne({ id: body.user.id }, function(err, existingUser) {
-      if (existingUser) {
-        var token = createToken(existingUser);
-        return res.send({ token: token, user: existingUser });
-      }
+    // Step 3a. Link user accounts.
+    if (req.headers.authorization) {
+      User.findOne({ id: body.user.id }, function(err, existingUser) {
+        if (existingUser) {
+          return res.status(409).send({ message: 'There is already a Facebook account that belongs to you' });
+        }
 
-      var user = new User({
-        id: body.user.id,
-        username: body.user.username,
-        fullName: body.user.full_name,
-        picture: body.user.profile_picture,
-        accessToken: body.access_token
-      });
+        var token = req.headers.authorization.split(' ')[1];
+        var payload = jwt.decode(token, config.tokenSecret);
 
-      user.save(function() {
-        var token = createToken(user);
-        res.send({ token: token, user: user });
+        User.findById(payload.id, function(err, user) {
+          if (!user) {
+            return res.status(400).send({ message: 'User not found' });
+          }
+
+          user.id = body.user.id;
+          user.username = body.user.username;
+          user.fullName = body.user.full_name;
+          user.picture = body.user.profile_picture;
+          user.accessToken = body.access_token;
+
+          user.save(function(err) {
+            res.send({ token: createToken(user) });
+          });
+        });
       });
-    });
+    } else {
+      // Step 3b. Create a new user account or return an existing one.
+      User.findOne({ id: body.user.id }, function(err, existingUser) {
+        if (existingUser) {
+          var token = createToken(existingUser);
+          return res.send({ token: token, user: existingUser });
+        }
+
+        var user = new User({
+          id: body.user.id,
+          username: body.user.username,
+          fullName: body.user.full_name,
+          picture: body.user.profile_picture,
+          accessToken: body.access_token
+        });
+
+        user.save(function() {
+          var token = createToken(user);
+          res.send({ token: token, user: user });
+        });
+      });
+    }
   });
 });
 
