@@ -12,7 +12,7 @@ var bcrypt = require('bcryptjs');
 var config = require('./config');
 
 var User = mongoose.model('User', new mongoose.Schema({
-  id: { type: Number, index: true },
+  instagramId: { type: Number, index: true },
   email: { type: String, unique: true, lowercase: true },
   password: { type: String, select: false },
   username: String,
@@ -53,8 +53,7 @@ function isAuthenticated(req, res, next) {
     return res.status(401).send({ message: 'Token has expired' });
   }
 
-  console.log(payload.sub);
-  User.findOne({ $or: [{ id: payload.sub }, { email: payload.sub }] }, function(err, user) {
+  User.findById(payload.sub, function(err, user) {
     console.log(err);
     console.log(user);
     console.log('getting id')
@@ -72,7 +71,7 @@ function createToken(user) {
   var payload = {
     exp: moment().add(14, 'days').unix(),
     iat: moment().unix(),
-    sub: user.id || user.email
+    sub: user._id
   };
 
   return jwt.encode(payload, config.tokenSecret);
@@ -149,52 +148,62 @@ app.post('/auth/instagram', function(req, res) {
   };
 
   request.post({ url: accessTokenUrl, form: params, json: true }, function(e, r, body) {
+
     // Step 3a. Link user accounts.
     if (req.headers.authorization) {
-      User.findOne({ id: body.user.id }, function(err, existingUser) {
+
+      User.findOne({ instagramId: body.user.id }, function(err, existingUser) {
+
         var token = req.headers.authorization.split(' ')[1];
         var payload = jwt.decode(token, config.tokenSecret);
         console.log(payload);
+        // todo: return error if trying to link instagram account with instagram
 
-        User.findOne({ email: payload.sub }, function(err, localUser) {
+
+        User.findById(payload.sub, function(err, localUser) {
           if (!localUser) {
             return res.status(400).send({ message: 'User not found' });
           }
 
-          // Merge existing Instagram account with the current local account
+          // Merge existing Instagram account with the currently logged-in local account
           if (existingUser) {
+
             existingUser.email = localUser.email;
             existingUser.password = localUser.password;
 
+            localUser.remove();
 
             existingUser.save(function() {
               var token = createToken(existingUser);
               return res.send({ token: token, user: existingUser });
             });
+
+          } else {
+            // Link current local account with the new instagram account info
+            localUser.instagramId = body.user.id;
+            localUser.username = body.user.username;
+            localUser.fullName = body.user.full_name;
+            localUser.picture = body.user.profile_picture;
+            localUser.accessToken = body.access_token;
+
+            localUser.save(function() {
+              var token = createToken(localUser);
+              res.send({ token: token, user: localUser });
+            });
+
           }
-
-          localUser.id = body.user.id;
-          localUser.username = body.user.username;
-          localUser.fullName = body.user.full_name;
-          localUser.picture = body.user.profile_picture;
-          localUser.accessToken = body.access_token;
-
-          localUser.save(function() {
-            var token = createToken(localUser);
-            res.send({ token: token, user: localUser });
-          });
         });
       });
     } else {
       // Step 3b. Create a new user account or return an existing one.
-      User.findOne({ id: body.user.id }, function(err, existingUser) {
+      User.findOne({ instagramId: body.user.id }, function(err, existingUser) {
         if (existingUser) {
           var token = createToken(existingUser);
           return res.send({ token: token, user: existingUser });
         }
 
         var user = new User({
-          id: body.user.id,
+          instagramId: body.user.id,
           username: body.user.username,
           fullName: body.user.full_name,
           picture: body.user.profile_picture,
