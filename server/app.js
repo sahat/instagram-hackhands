@@ -241,6 +241,17 @@ app.get('/api/media/:id', isAuthenticated, function(req, res, next) {
   });
 });
 
+app.post('/api/like', isAuthenticated, function(req, res, next) {
+  var mediaId = req.body.mediaId;
+  var likeUrl = 'https://api.instagram.com/v1/media/' + mediaId  + '/likes';
+
+  request.post({ url: likeUrl, form: { access_token: req.user.accessToken } }, function(e, r, body) {
+    if (!error && response.statusCode == 200) {
+      res.end(200);
+    }
+  });
+});
+
 app.listen(app.get('port'), function() {
   console.log('Express server listening on port ' + app.get('port'));
 });
