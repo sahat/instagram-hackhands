@@ -243,12 +243,17 @@ app.get('/api/media/:id', isAuthenticated, function(req, res, next) {
 
 app.post('/api/like', isAuthenticated, function(req, res, next) {
   var mediaId = req.body.mediaId;
-  var likeUrl = 'https://api.instagram.com/v1/media/' + mediaId  + '/likes';
+  var likeUrl = 'https://api.instagram.com/v1/media/' + mediaId + '/likes';
 
-  request.post({ url: likeUrl, form: { access_token: req.user.accessToken } }, function(e, r, body) {
-    if (!e && r.statusCode == 200) {
-      res.status(200).end();
+  request.post({ url: likeUrl, form: { access_token: req.user.accessToken }, json: true }, function(error, response, body) {
+    if (response.statusCode !== 200) {
+      return res.status(response.statusCode).send({
+        code: response.statusCode,
+        message: body.meta.error_message
+      });
     }
+
+    res.status(200).end();
   });
 });
 
