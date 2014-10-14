@@ -1,5 +1,5 @@
 angular.module('Instagram')
-  .controller('DetailCtrl', function($scope, $location, ngDialog, API) {
+  .controller('DetailCtrl', function($scope, $rootScope, $location, ngDialog, API) {
 
     var mediaId = $location.path().split('/').pop();
 
@@ -16,14 +16,20 @@ angular.module('Instagram')
       });
     };
 
-    API.getMediaById(mediaId).success(function(data) {
-      $scope.photo = data;
+    // TODO: Move into router resolve
+    API.getMediaById(mediaId).success(function(media) {
+      console.log(media)
+      $scope.photo = media;
     });
 
     $scope.like = function() {
-      API.likeMedia(mediaId).success(function(data) {
-        alert('liked');
-      });
+      API.likeMedia(mediaId)
+        .success(function() {
+          $scope.hasLiked = true;
+        })
+        .error(function(data) {
+          sweetAlert('Error', data.message, 'error');
+        });
     };
 
   });

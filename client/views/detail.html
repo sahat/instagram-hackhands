@@ -41,8 +41,8 @@
           <hr class="soften">
 
           <div class="btn-group">
-            <button class="btn btn-default" ng-class="{ 'btn-liked': hasLiked }" ng-click="like()">
-              <i class="ion-heart text-danger"></i>
+            <button class="btn" ng-class="{ 'btn-danger': hasLiked, 'btn-default': !hasLiked }" ng-click="like()">
+              <i class="ion-heart" ng-class="{ 'text-danger': !hasLiked}"></i>
               <span ng-if="hasLiked">Liked</span>
               <span ng-if="!hasLiked">Like</span>
             </button>
