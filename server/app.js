@@ -53,8 +53,11 @@ function isAuthenticated(req, res, next) {
     return res.status(401).send({ message: 'Token has expired' });
   }
 
-  User.findOne({ id: payload.sub, email: payload.sub }, function(err, user) {
-    console.log('getting id');
+  console.log(payload.sub);
+  User.findOne({ $or: [{ id: payload.sub }, { email: payload.sub }] }, function(err, user) {
+    console.log(err);
+    console.log(user);
+    console.log('getting id')
     req.user = user;
     next();
   })
@@ -152,7 +155,8 @@ app.post('/auth/instagram', function(req, res) {
         var token = req.headers.authorization.split(' ')[1];
         var payload = jwt.decode(token, config.tokenSecret);
         console.log(payload);
-        User.findById(payload.id, function(err, localUser) {
+
+        User.findOne({ email: payload.sub }, function(err, localUser) {
           if (!localUser) {
             return res.status(400).send({ message: 'User not found' });
           }
@@ -162,13 +166,12 @@ app.post('/auth/instagram', function(req, res) {
             existingUser.email = localUser.email;
             existingUser.password = localUser.password;
 
+
             existingUser.save(function() {
-              var token = createToken(localUser);
+              var token = createToken(existingUser);
               return res.send({ token: token, user: existingUser });
             });
           }
-
-
 
           localUser.id = body.user.id;
           localUser.username = body.user.username;
