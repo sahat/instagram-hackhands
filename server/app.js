@@ -12,7 +12,7 @@ var bcrypt = require('bcryptjs');
 var config = require('./config');
 
 var User = mongoose.model('User', new mongoose.Schema({
-  instagramId: { type: Number, index: true },
+  instagramId: { type: String, index: true },
   email: { type: String, unique: true, lowercase: true },
   password: { type: String, select: false },
   username: String,
@@ -252,7 +252,6 @@ app.post('/api/like', isAuthenticated, function(req, res, next) {
         message: body.meta.error_message
       });
     }
-
     res.status(200).end();
   });
 });
