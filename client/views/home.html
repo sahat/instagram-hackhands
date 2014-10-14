@@ -5,7 +5,7 @@
     <div class="row">
 
       <div ng-repeat="photo in photos" class="col-lg-2 col-sm-3 col-xs-4">
-        <a href="#/{{photo.id}}">
+        <a href="#/photo/{{photo.id}}">
           <img ng-src="{{photo.images.standard_resolution.url}}" class="thumbnail img-responsive">
         </a>
       </div>

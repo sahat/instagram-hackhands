@@ -6,7 +6,7 @@ angular.module('Instagram')
         return $http.get('http://localhost:3000/api/feed');
       },
       getMediaById: function(id) {
-        return $http.get('http://localhost:3000/api/media' + id);
+        return $http.get('http://localhost:3000/api/media/' + id);
       }
     }
 

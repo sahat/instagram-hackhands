@@ -13,11 +13,10 @@ angular.module('Instagram', ['ngRoute', 'ngMessages', 'ngDialog', 'satellizer'])
         templateUrl: 'views/signup.html',
         controller: 'SignupCtrl'
       })
-      .when('/:photo_id', {
+      .when('/photo/:id', {
         templateUrl: 'views/detail.html',
         controller: 'DetailCtrl'
       })
-
       .otherwise('/');
 
     $authProvider.loginOnSignup = false;
