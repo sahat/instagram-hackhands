@@ -160,7 +160,7 @@ app.post('/auth/instagram', function(req, res) {
         // todo: return error if trying to link instagram account with instagram
 
 
-        User.findById(payload.sub, function(err, localUser) {
+        User.findById(payload.sub, '+password', function(err, localUser) {
           if (!localUser) {
             return res.status(400).send({ message: 'User not found' });
           }
