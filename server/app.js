@@ -148,26 +148,36 @@ app.post('/auth/instagram', function(req, res) {
     // Step 3a. Link user accounts.
     if (req.headers.authorization) {
       User.findOne({ id: body.user.id }, function(err, existingUser) {
-        if (existingUser) {
-          return res.status(409).send({ message: 'There is already a Facebook account that belongs to you' });
-        }
-
         var token = req.headers.authorization.split(' ')[1];
         var payload = jwt.decode(token, config.tokenSecret);
-
-        User.findById(payload.id, function(err, user) {
-          if (!user) {
+        console.log(payload);
+        User.findById(payload.id, function(err, localUser) {
+          if (!localUser) {
             return res.status(400).send({ message: 'User not found' });
           }
 
-          user.id = body.user.id;
-          user.username = body.user.username;
-          user.fullName = body.user.full_name;
-          user.picture = body.user.profile_picture;
-          user.accessToken = body.access_token;
+          // Merge existing Instagram account with the current local account
+          if (existingUser) {
+            existingUser.email = localUser.email;
+            existingUser.password = localUser.password;
 
-          user.save(function(err) {
-            res.send({ token: createToken(user) });
+            existingUser.save(function() {
+              var token = createToken(localUser);
+              return res.send({ token: token, user: existingUser });
+            });
+          }
+
+
+
+          localUser.id = body.user.id;
+          localUser.username = body.user.username;
+          localUser.fullName = body.user.full_name;
+          localUser.picture = body.user.profile_picture;
+          localUser.accessToken = body.access_token;
+
+          localUser.save(function() {
+            var token = createToken(localUser);
+            res.send({ token: token, user: localUser });
           });
         });
       });
