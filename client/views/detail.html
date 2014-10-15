@@ -14,6 +14,7 @@
             <h6 class="text-muted"><i class="ion-clock"></i> {{photo.created_time * 1000 | date:'short'}}</h6>
 
             <p>{{photo.caption.text}}</p>
+
           </div>
         </div>
 
@@ -25,6 +26,7 @@
           <h5><i class="ion-heart text-danger"></i> {{photo.likes.count}} likes</h5>
 
           <hr class="soften">
+          <h5 class="text-center"><i class="ion-chatbox-working text-primary"></i> Comments</h5>
 
           <ul class="media-list">
             <li ng-repeat="comment in photo.comments.data" class="media">
@@ -36,6 +38,7 @@
                 {{comment.text}}
               </div>
             </li>
+            <li ng-if="!photo.comments.data.length">No comments</li>
           </ul>
 
           <hr class="soften">
@@ -46,7 +49,7 @@
               <span ng-if="hasLiked">Liked</span>
               <span ng-if="!hasLiked">Like</span>
             </button>
-            <button class="btn btn-default" ng-click="comment()"><i class="ion-android-forums text-primary"></i> Comment</button>
+            <button class="btn btn-default" ng-click="comment()"><i class="ion-chatbox-working text-primary"></i> Comment</button>
           </div>
 
         </div>
