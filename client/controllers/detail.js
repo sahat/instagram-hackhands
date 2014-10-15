@@ -15,13 +15,4 @@ angular.module('Instagram')
         sweetAlert('Error', data.message, 'error');
       });
     };
-
-    $scope.comment = function() {
-      var text = prompt('Leave a Comment');
-
-      API.comment(mediaId, text).error(function(data) {
-        sweetAlert('Error', data.message, 'error');
-      });
-    };
-
   });

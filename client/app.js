@@ -29,7 +29,7 @@ angular.module('Instagram', ['ngRoute', 'ngMessages', 'satellizer'])
       redirectUri: 'http://localhost:8000',
       clientId: '799d1f8ea0e44ac8b70e7f18fcacedd1',
       requiredUrlParams: ['scope'],
-      scope: ['likes', 'comments'],
+      scope: ['likes'],
       scopeDelimiter: '+',
       authorizationEndpoint: 'https://api.instagram.com/oauth/authorize'
     });
