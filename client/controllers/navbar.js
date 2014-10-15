@@ -6,7 +6,6 @@ angular.module('Instagram')
 
     $scope.logout = function() {
       $auth.logout();
+      delete $window.localStorage.currentUser;
     };
-
-    $rootScope.currentUser = JSON.parse($window.localStorage.currentUser);
   });
