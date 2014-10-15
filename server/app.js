@@ -38,25 +38,20 @@ app.use(express.static(path.join(__dirname, 'public')));
  |--------------------------------------------------------------------------
  */
 function isAuthenticated(req, res, next) {
-  if (!req.headers.authorization) {
-    res.status(401).send({
-      code: 401,
-      message: 'You did not provide a JSON Web Token in the Authorization header.'
-    });
+  if (!(req.headers && req.headers.authorization)) {
+    return res.status(400).send({ message: 'You did not provide a JSON Web Token in the Authorization header.' });
   }
 
-  var token = req.headers.authorization.split(' ')[1];
+  var header = req.headers.authorization.split(' ');
+  var token = header[1];
   var payload = jwt.decode(token, config.tokenSecret);
   var now = moment().unix();
 
   if (now > payload.exp) {
-    return res.status(401).send({ message: 'Token has expired' });
+    return res.status(401).send({ message: 'Token has expired.' });
   }
 
   User.findById(payload.sub, function(err, user) {
-    console.log(err);
-    console.log(user);
-    console.log('getting id')
     req.user = user;
     next();
   })
@@ -156,9 +151,6 @@ app.post('/auth/instagram', function(req, res) {
 
         var token = req.headers.authorization.split(' ')[1];
         var payload = jwt.decode(token, config.tokenSecret);
-        console.log(payload);
-        // todo: return error if trying to link instagram account with instagram
-
 
         User.findById(payload.sub, '+password', function(err, localUser) {
           if (!localUser) {
@@ -254,24 +246,6 @@ app.post('/api/like', isAuthenticated, function(req, res, next) {
       });
     }
     res.status(200).end();
-  });
-});
-
-app.post('/api/comment', isAuthenticated, function(req, res, next) {
-  var mediaId = req.body.mediaId;
-  var commentUrl = 'https://api.instagram.com/v1/media/' + mediaId + '/comments';
-
-  var data = {
-    access_token: req.user.accessToken,
-    text: req.body.comment
-  };
-
-  request.post({ url: commentUrl, form: data, json: true }, function(error, response, body) {
-    if (response.statusCode !== 200) {
-      res.status(response.statusCode);
-      return res.send({ code: response.statusCode, message: body.meta.error_message });
-    }
-    res.status(200).send();
   });
 });
 
