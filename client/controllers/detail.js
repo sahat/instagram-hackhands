@@ -10,24 +10,18 @@ angular.module('Instagram')
     });
 
     $scope.like = function() {
-      API.likeMedia(mediaId)
-        .success(function() {
-          $scope.hasLiked = true;
-        })
-        .error(function(data) {
-          sweetAlert('Error', data.message, 'error');
-        });
+      $scope.hasLiked = true;
+      API.likeMedia(mediaId).error(function(data) {
+        sweetAlert('Error', data.message, 'error');
+      });
     };
 
     $scope.comment = function() {
-      var text = prompt('Leave a Comment')
-      API.comment(mediaId, text)
-        .success(function() {
+      var text = prompt('Leave a Comment');
 
-        })
-        .error(function() {
-          sweetAlert('Error', data.message, 'error');
-        });
+      API.comment(mediaId, text).error(function(data) {
+        sweetAlert('Error', data.message, 'error');
+      });
     };
 
   });
