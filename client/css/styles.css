@@ -1,5 +1,5 @@
 body {
-  background-color: #f9f9f9;
+  background-color: #d8d8d8;
 }
 
 a {
@@ -128,4 +128,10 @@ hr.soften {
   background-image: -moz-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, .1), rgba(0, 0, 0, 0));
   background-image: -ms-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, .1), rgba(0, 0, 0, 0));
   border: 0;
+}
+
+.thumbnail {
+  border: 0;
+  border-radius: 0;
+  box-shadow: 0 0 0 1px rgba(0,0,0,.04),0 1px 5px rgba(0,0,0,.1);
 }
