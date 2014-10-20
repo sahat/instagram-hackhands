@@ -1,7 +1,7 @@
 angular.module('Instagram')
-  .controller('HomeCtrl', function($scope, $auth, API) {
+  .controller('HomeCtrl', function($scope, $rootScope, $auth, API) {
 
-    if ($auth.isAuthenticated()) {
+    if ($rootScope.currentUser.username) {
       API.getFeed().success(function(data) {
         $scope.photos = data;
       });
