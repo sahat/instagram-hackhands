@@ -49,8 +49,13 @@ function isAuthenticated(req, res, next) {
   if (now > payload.exp) {
     return res.status(401).send({ message: 'Token has expired.' });
   }
+  console.log(payload);
 
   User.findById(payload.sub, function(err, user) {
+    if (!user) {
+      return res.status(400).send({ message: 'User no longer exists.' });
+    }
+
     req.user = user;
     next();
   })
@@ -210,7 +215,7 @@ app.post('/auth/instagram', function(req, res) {
   });
 });
 
-app.get('/api/feed', isAuthenticated, function(req, res, next) {
+app.get('/api/feed', isAuthenticated, function(req, res) {
   var feedUrl = 'https://api.instagram.com/v1/users/self/feed';
   var params = { access_token: req.user.accessToken };
 
