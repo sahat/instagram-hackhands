@@ -3,20 +3,13 @@
   <div ng-if="isAuthenticated() && currentUser.username">
 
     <div class="row">
-
       <div ng-repeat="photo in photos" class="col-lg-2 col-sm-3 col-xs-4">
         <a href="#/photo/{{photo.id}}">
           <img ng-src="{{photo.images.standard_resolution.url}}" class="thumbnail img-responsive">
         </a>
       </div>
-
     </div>
 
-    <div class="text-center">
-      <button class="btn btn-default">Load More</button>
-    </div>
-
-    <br/>
   </div>
 
   <div ng-if="!isAuthenticated()">
