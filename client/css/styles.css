@@ -15,8 +15,8 @@ a:hover {
 }
 
 .navbar {
-  border: 0;
   min-height: 50px;
+  border: 0;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, .26);
 }
 
@@ -26,10 +26,10 @@ a:hover {
 }
 
 .navbar-brand {
-  font-size: inherit;
-  padding: 0 15px;
-  line-height: 50px;
   height: 50px;
+  padding: 0 15px;
+  font-size: inherit;
+  line-height: 50px;
 }
 
 .navbar-nav {
@@ -59,9 +59,9 @@ a:hover {
 .signup-or-separator {
   position: relative;
   height: 29px;
+  margin: 5px 0;
   text-align: center;
   background: none;
-  margin: 5px 0;
 }
 
 .signup-or-separator hr {
@@ -122,7 +122,7 @@ a:hover {
   color: #1c5380;
 }
 
-hr.soften {
+.soften {
   height: 1px;
   background-image: -webkit-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, .1), rgba(0, 0, 0, 0));
   background-image: -moz-linear-gradient(left, rgba(0, 0, 0, 0), rgba(0, 0, 0, .1), rgba(0, 0, 0, 0));
