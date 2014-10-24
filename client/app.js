@@ -19,10 +19,8 @@ angular.module('Instagram', ['ngRoute', 'ngMessages', 'chieffancypants.loadingBa
       })
       .otherwise('/');
 
-    $authProvider.loginOnSignup = false;
     $authProvider.loginUrl = 'http://localhost:3000/auth/login';
     $authProvider.signupUrl = 'http://localhost:3000/auth/signup';
-
     $authProvider.oauth2({
       name: 'instagram',
       url: 'http://localhost:3000/auth/instagram',
