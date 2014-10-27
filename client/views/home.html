@@ -1,7 +1,6 @@
 <div class="container">
 
   <div ng-if="isAuthenticated() && currentUser.username">
-
     <div class="row">
       <div ng-repeat="photo in photos" class="col-lg-2 col-sm-3 col-xs-4">
         <a href="#/photo/{{photo.id}}">
@@ -9,7 +8,6 @@
         </a>
       </div>
     </div>
-
   </div>
 
   <div ng-if="!isAuthenticated()">
