@@ -1,4 +1,3 @@
-var async = require('async');
 var bcrypt = require('bcryptjs');
 var bodyParser = require('body-parser');
 var cors = require('cors');
