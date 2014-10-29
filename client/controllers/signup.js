@@ -1,5 +1,6 @@
 angular.module('Instagram')
-  .controller('SignupCtrl', function($scope, $location, $auth) {
+  .controller('SignupCtrl', function($scope, $auth) {
+
     $scope.signup = function() {
       var user = {
         email: $scope.email,
@@ -7,11 +8,9 @@ angular.module('Instagram')
       };
 
       $auth.signup(user)
-        .then(function(response) {
-
-        })
         .catch(function(response) {
           console.log(response.data);
         });
     };
+
   });

@@ -1,5 +1,6 @@
 angular.module('Instagram')
   .controller('LoginCtrl', function($scope, $window, $location, $rootScope, $auth) {
+
     $scope.instagramLogin = function() {
       $auth.authenticate('instagram')
         .then(function(response) {
