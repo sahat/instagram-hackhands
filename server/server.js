@@ -48,7 +48,6 @@ function isAuthenticated(req, res, next) {
   if (now > payload.exp) {
     return res.status(401).send({ message: 'Token has expired.' });
   }
-  console.log(payload);
 
   User.findById(payload.sub, function(err, user) {
     if (!user) {
@@ -108,7 +107,7 @@ app.post('/auth/login', function(req, res) {
 app.post('/auth/signup', function(req, res) {
   User.findOne({ email: req.body.email }, function(err, existingUser) {
     if (existingUser) {
-      return res.status(409).send({ message: 'Email is already taken' });
+      return res.status(409).send({ message: 'Email is already taken.' });
     }
 
     var user = new User({
@@ -145,9 +144,10 @@ app.post('/auth/instagram', function(req, res) {
     grant_type: 'authorization_code'
   };
 
-  request.post({ url: accessTokenUrl, form: params, json: true }, function(e, r, body) {
+  // Step 1. Exchange authorization code for access token.
+  request.post({ url: accessTokenUrl, form: params, json: true }, function(error, response, body) {
 
-    // Step 3a. Link user accounts.
+    // Step 2a. Link user accounts.
     if (req.headers.authorization) {
 
       User.findOne({ instagramId: body.user.id }, function(err, existingUser) {
@@ -157,10 +157,10 @@ app.post('/auth/instagram', function(req, res) {
 
         User.findById(payload.sub, '+password', function(err, localUser) {
           if (!localUser) {
-            return res.status(400).send({ message: 'User not found' });
+            return res.status(400).send({ message: 'User not found.' });
           }
 
-          // Merge existing Instagram account with the currently logged-in local account
+          // Merge two accounts. Instagram account takes precedence. Email account is deleted.
           if (existingUser) {
 
             existingUser.email = localUser.email;
@@ -174,7 +174,7 @@ app.post('/auth/instagram', function(req, res) {
             });
 
           } else {
-            // Link current local account with the new instagram account info
+            // Link current email account with the Instagram profile information.
             localUser.instagramId = body.user.id;
             localUser.username = body.user.username;
             localUser.fullName = body.user.full_name;
@@ -190,7 +190,7 @@ app.post('/auth/instagram', function(req, res) {
         });
       });
     } else {
-      // Step 3b. Create a new user account or return an existing one.
+      // Step 2b. Create a new user account or return an existing one.
       User.findOne({ instagramId: body.user.id }, function(err, existingUser) {
         if (existingUser) {
           var token = createToken(existingUser);
@@ -225,7 +225,7 @@ app.get('/api/feed', isAuthenticated, function(req, res) {
   });
 });
 
-app.get('/api/media/:id', isAuthenticated, function(req, res, next) {
+app.get('/api/media/:id', isAuthenticated, function(req, res) {
   var mediaUrl = 'https://api.instagram.com/v1/media/' + req.params.id;
   var params = { access_token: req.user.accessToken };
 
@@ -236,7 +236,7 @@ app.get('/api/media/:id', isAuthenticated, function(req, res, next) {
   });
 });
 
-app.post('/api/like', isAuthenticated, function(req, res, next) {
+app.post('/api/like', isAuthenticated, function(req, res) {
   var mediaId = req.body.mediaId;
   var accessToken = { access_token: req.user.accessToken };
   var likeUrl = 'https://api.instagram.com/v1/media/' + mediaId + '/likes';
