@@ -1,5 +1,6 @@
 angular.module('Instagram')
   .controller('NavbarCtrl', function($scope, $rootScope, $window, $auth) {
+
     $scope.isAuthenticated = function() {
       return $auth.isAuthenticated();
     };
@@ -8,4 +9,5 @@ angular.module('Instagram')
       $auth.logout();
       delete $window.localStorage.currentUser;
     };
+
   });

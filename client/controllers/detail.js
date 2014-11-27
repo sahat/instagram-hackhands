@@ -3,9 +3,7 @@ angular.module('Instagram')
 
     var mediaId = $location.path().split('/').pop();
 
-    // TODO: Move into router resolve
     API.getMediaById(mediaId).success(function(media) {
-      console.log(media)
       $scope.photo = media;
     });
 
