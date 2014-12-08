@@ -5,9 +5,7 @@ angular.module('Instagram')
         require: 'ngModel',
         link: function(scope, element, attrs, ctrl) {
           element.on('keydown', function() {
-            scope.$apply(function() {
-              ctrl.$setValidity('server', true)
-            });
+            ctrl.$setValidity('server', true)
           });
         }
     }
