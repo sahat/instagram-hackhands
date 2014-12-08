@@ -7,6 +7,7 @@ var moment = require('moment');
 var mongoose = require('mongoose');
 var path = require('path');
 var request = require('request');
+var compress = require('compression');
 
 var config = require('./config');
 
