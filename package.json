@@ -2,7 +2,7 @@
   "name": "instagram-server",
   "version": "0.0.0",
   "scripts": {
-    "start": "node server/app.js"
+    "start": "node server/server.js"
   },
   "dependencies": {
     "bcryptjs": "^2.0.2",
@@ -13,5 +13,17 @@
     "moment": "^2.8.3",
     "mongoose": "^3.8.17",
     "request": "^2.44.0"
+  },
+  "devDependencies": {
+    "gulp": "^3.8.10",
+    "gulp-angular-templatecache": "^1.4.2",
+    "gulp-complexity": "^0.3.0",
+    "gulp-concat": "^2.4.2",
+    "gulp-csso": "^0.2.9",
+    "gulp-filter": "^1.0.2",
+    "gulp-header": "^1.2.2",
+    "gulp-ng-annotate": "^0.4.1",
+    "gulp-recess": "^1.1.1",
+    "gulp-uglify": "^1.0.2"
   }
 }
