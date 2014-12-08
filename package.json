@@ -2,7 +2,7 @@
   "name": "instagram-server",
   "version": "0.0.0",
   "scripts": {
-    "start": "node app.js"
+    "start": "node server/app.js"
   },
   "dependencies": {
     "bcryptjs": "^2.0.2",
