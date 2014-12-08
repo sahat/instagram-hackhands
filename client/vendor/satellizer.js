@@ -9,6 +9,7 @@
 
   angular.module('satellizer', [])
     .constant('satellizer.config', {
+      httpInterceptor: true,
       loginOnSignup: true,
       loginRedirect: '/',
       logoutRedirect: '/',
@@ -20,6 +21,7 @@
       tokenName: 'token',
       tokenPrefix: 'satellizer',
       unlinkUrl: '/auth/unlink/',
+      authHeader: 'Authorization',
       providers: {
         google: {
           url: '/auth/google',
@@ -37,7 +39,7 @@
         facebook: {
           url: '/auth/facebook',
           authorizationEndpoint: 'https://www.facebook.com/dialog/oauth',
-          redirectUri: window.location.origin || window.location.protocol + '//' + window.location.host,
+          redirectUri: window.location.origin + '/' || window.location.protocol + '//' + window.location.host + '/',
           scope: ['email'],
           scopeDelimiter: ',',
           requiredUrlParams: ['display', 'scope'],
@@ -57,7 +59,6 @@
           popupOptions: { width: 527, height: 582 }
         },
         github: {
-          name: 'github',
           url: '/auth/github',
           authorizationEndpoint: 'https://github.com/login/oauth/authorize',
           redirectUri: window.location.origin || window.location.protocol + '//' + window.location.host,
@@ -66,15 +67,30 @@
           type: '2.0',
           popupOptions: { width: 1020, height: 618 }
         },
+        yahoo: {
+          url: '/auth/yahoo',
+          authorizationEndpoint: 'https://api.login.yahoo.com/oauth2/request_auth',
+          redirectUri: window.location.origin || window.location.protocol + '//' + window.location.host,
+          scope: [],
+          scopeDelimiter: ',',
+          type: '2.0',
+          popupOptions: { width: 559, height: 519 }
+        },
         twitter: {
           url: '/auth/twitter',
           type: '1.0',
           popupOptions: { width: 495, height: 645 }
         },
-        yahoo: {
-          url: '/auth/yahoo',
-          type: '1.0',
-          popupOptions: { width: 559, height: 519 }
+        live: {
+          url: '/auth/live',
+          authorizationEndpoint: 'https://login.live.com/oauth20_authorize.srf',
+          redirectUri: window.location.origin || window.location.protocol + '//' + window.location.host,
+          scope: ['wl.basic'],
+          scopeDelimiter: ' ',
+          requiredUrlParams: ['display', 'scope'],
+          display: 'popup',
+          type: '2.0',
+          popupOptions: { width: 500, height: 560 }
         }
       }
     })
@@ -123,6 +139,10 @@
         unlinkUrl: {
           get: function() { return config.unlinkUrl; },
           set: function(value) { config.unlinkUrl = value; }
+        },
+        authHeader: {
+          get: function() { return config.authHeader; },
+          set: function(value) { config.authHeader = value; }
         }
       });
 
@@ -183,6 +203,18 @@
             return oauth.unlink(provider);
           };
 
+          $auth.getToken = function() {
+            return shared.getToken();
+          };
+
+          $auth.setToken = function(token, isLinking) {
+            shared.setToken({ access_token: token }, isLinking);
+          };
+
+          $auth.getPayload = function() {
+            return shared.getPayload();
+          };
+
           return $auth;
         }];
 
@@ -195,49 +227,63 @@
       function($q, $window, $location, config) {
         var shared = {};
 
-        shared.saveToken = function(response, deferred, isLinking) {
-          var token = response.data[config.tokenName];
+        shared.getToken = function() {
           var tokenName = config.tokenPrefix ? config.tokenPrefix + '_' + config.tokenName : config.tokenName;
+          return $window.localStorage[tokenName];
+        };
+
+        shared.getPayload = function() {
+          var tokenName = config.tokenPrefix ? config.tokenPrefix + '_' + config.tokenName : config.tokenName;
+          var token = $window.localStorage[tokenName];
+
+          if (token && token.split('.').length === 3) {
+            var base64Url = token.split('.')[1];
+            var base64 = base64Url.replace('-', '+').replace('_', '/');
+            return JSON.parse($window.atob(base64));
+          }
+        };
+
+        shared.setToken = function(response, isLinking) {
+          var token = response.access_token || response.data[config.tokenName];
+          var tokenName = config.tokenPrefix ? config.tokenPrefix + '_' + config.tokenName : config.tokenName;
+
+          if (!token) {
+            throw new Error('Expecting a token named "' + config.tokenName + '" but instead got: ' + JSON.stringify(response.data));
+          }
+
           $window.localStorage[tokenName] = token;
 
           if (config.loginRedirect && !isLinking) {
             $location.path(config.loginRedirect);
           }
-
-          deferred.resolve(response);
         };
 
         shared.isAuthenticated = function() {
           var tokenName = config.tokenPrefix ? config.tokenPrefix + '_' + config.tokenName : config.tokenName;
           var token = $window.localStorage[tokenName];
 
-          // IE8 and IE9
-          if (token && !$window.atob) {
-            return true;
-          }
-
           if (token) {
-            var base64Url = token.split('.')[1];
-            var base64 = base64Url.replace('-', '+').replace('_', '/');
-            var exp = JSON.parse($window.atob(base64)).exp;
-            return Math.round(new Date().getTime() / 1000) <= exp;
+            if (token.split('.').length === 3) {
+              var base64Url = token.split('.')[1];
+              var base64 = base64Url.replace('-', '+').replace('_', '/');
+              var exp = JSON.parse($window.atob(base64)).exp;
+              return Math.round(new Date().getTime() / 1000) <= exp;
+            } else {
+              return true;
+            }
           }
 
           return false;
         };
 
         shared.logout = function() {
-          var deferred = $q.defer();
           var tokenName = config.tokenPrefix ? config.tokenPrefix + '_' + config.tokenName : config.tokenName;
           delete $window.localStorage[tokenName];
 
           if (config.logoutRedirect) {
             $location.path(config.logoutRedirect);
           }
-
-          deferred.resolve();
-
-          return deferred.promise;
+          return $q.when();
         };
 
         return shared;
@@ -253,18 +299,14 @@
         var oauth = {};
 
         oauth.authenticate = function(name, isLinking, userData) {
-          var deferred = $q.defer();
           var provider = config.providers[name].type === '1.0' ? new Oauth1() : new Oauth2();
 
-          provider.open(config.providers[name], userData || {})
+          return provider.open(config.providers[name], userData || {})
             .then(function(response) {
-              shared.saveToken(response, deferred, isLinking);
-            })
-            .then(null, function(response) {
-              deferred.reject(response);
+              shared.setToken(response, isLinking);
+              return response;
             });
 
-          return deferred.promise;
         };
 
         oauth.unlink = function(provider) {
@@ -284,36 +326,23 @@
         var local = {};
 
         local.login = function(user) {
-          var deferred = $q.defer();
-
-          $http.post(config.loginUrl, user)
+          return $http.post(config.loginUrl, user)
             .then(function(response) {
-              shared.saveToken(response, deferred);
-            })
-            .then(null, function(response) {
-              deferred.reject(response);
+              shared.setToken(response);
+              return response;
             });
-
-          return deferred.promise;
         };
 
         local.signup = function(user) {
-          var deferred = $q.defer();
-
-          $http.post(config.signupUrl, user)
+          return $http.post(config.signupUrl, user)
             .then(function(response) {
               if (config.loginOnSignup) {
-                shared.saveToken(response, deferred);
+                shared.setToken(response);
               } else {
                 $location.path(config.signupRedirect);
-                deferred.resolve(response);
               }
-            })
-            .then(null, function(response) {
-              deferred.reject(response);
+              return response;
             });
-
-          return deferred.promise;
         };
 
         return local;
@@ -323,7 +352,8 @@
       '$http',
       'satellizer.popup',
       'satellizer.utils',
-      function($q, $http, popup, utils) {
+      'satellizer.config',
+      function($q, $http, popup, utils, config) {
         return function() {
 
           var defaults = {
@@ -345,24 +375,17 @@
 
           oauth2.open = function(options, userData) {
             angular.extend(defaults, options);
-            var deferred = $q.defer();
             var url = oauth2.buildUrl();
 
-            popup.open(url, defaults.popupOptions)
+            return popup.open(url, defaults.popupOptions)
               .then(function(oauthData) {
-                oauth2.exchangeForToken(oauthData, userData)
-                  .then(function(response) {
-                    deferred.resolve(response);
-                  })
-                  .then(null, function(response) {
-                    deferred.reject(response);
-                  });
-              })
-              .then(null, function(error) {
-                deferred.reject(error);
+                if (defaults.responseType === 'token') {
+                  return oauthData;
+                } else {
+                  return oauth2.exchangeForToken(oauthData, userData);
+                }
               });
 
-            return deferred.promise;
           };
 
           oauth2.exchangeForToken = function(oauthData, userData) {
@@ -398,7 +421,7 @@
                   }
                 }
 
-                keyValuePairs.push([paramName, encodeURIComponent(paramValue)]);
+                keyValuePairs.push([paramName, paramValue]);
               });
             });
 
@@ -423,24 +446,10 @@
 
         oauth1.open = function(options, userData) {
           angular.extend(defaults, options);
-
-          var deferred = $q.defer();
-
-          popup.open(defaults.url, defaults.popupOptions)
+          return popup.open(defaults.url, defaults.popupOptions)
             .then(function(response) {
-              oauth1.exchangeForToken(response, userData)
-                .then(function(response) {
-                  deferred.resolve(response);
-                })
-                .then(null, function(response) {
-                  deferred.reject(response);
-                });
-            })
-            .then(null, function(response) {
-              deferred.reject(response);
+              return oauth1.exchangeForToken(response, userData);
             });
-
-          return deferred.promise;
         };
 
         oauth1.exchangeForToken = function(oauthData, userData) {
@@ -475,7 +484,6 @@
         popup.popupWindow = popupWindow;
 
         popup.open = function(url, options) {
-          var deferred = $q.defer();
           var optionsString = popup.stringifyOptions(popup.prepareOptions(options || {}));
 
           popupWindow = window.open(url, '_blank', optionsString);
@@ -484,28 +492,27 @@
             popupWindow.focus();
           }
 
-          popup.pollPopup(deferred);
-
-          return deferred.promise;
+          return popup.pollPopup();
         };
 
-        popup.pollPopup = function(deferred) {
+        popup.pollPopup = function() {
+          var deferred = $q.defer();
           polling = $interval(function() {
             try {
-              if (popupWindow.document.domain === document.domain && popupWindow.location.search) {
-                var params = popupWindow.location.search.substring(1).replace(/\/$/, '');
-                var qs = Object.keys($location.search()).length ? $location.search() : utils.parseQueryString(params);
+              if (popupWindow.document.domain === document.domain && (popupWindow.location.search || popupWindow.location.hash)) {
+                var queryParams = popupWindow.location.search.substring(1).replace(/\/$/, '');
+                var hashParams = popupWindow.location.hash.substring(1).replace(/\/$/, '');
+                var hash = utils.parseQueryString(hashParams);
+                var qs = utils.parseQueryString(queryParams);
 
-                console.log($location.search())
-                console.log(utils.parseQueryString(params))
+                angular.extend(qs, hash);
 
-                if (qs.oauth_token && qs.oauth_verifier) {
-                  deferred.resolve({ oauth_token: qs.oauth_token, oauth_verifier: qs.oauth_verifier });
-                } else if (qs.code) {
-                  deferred.resolve({ code: qs.code });
-                } else if (qs.error) {
+                if (qs.error) {
                   deferred.reject({ error: qs.error });
+                } else {
+                  deferred.resolve(qs);
                 }
+
                 popupWindow.close();
                 $interval.cancel(polling);
               }
@@ -516,6 +523,7 @@
               deferred.reject({ data: 'Authorization Failed' });
             }
           }, 35);
+          return deferred.promise;
         };
 
         popup.prepareOptions = function(options) {
@@ -559,23 +567,61 @@
       };
     })
     .config(['$httpProvider', 'satellizer.config', function($httpProvider, config) {
-      $httpProvider.interceptors.push(['$q', function($q) {
-        var tokenName = config.tokenPrefix ? config.tokenPrefix + '_' + config.tokenName : config.tokenName;
-        return {
-          request: function(httpConfig) {
-            if (localStorage.getItem(tokenName)) {
-              httpConfig.headers.Authorization = 'Bearer ' + localStorage.getItem(tokenName);
+      if (config.httpInterceptor) {
+        $httpProvider.interceptors.push(['$q', function($q) {
+          var tokenName = config.tokenPrefix ? config.tokenPrefix + '_' + config.tokenName : config.tokenName;
+          return {
+            request: function(httpConfig) {
+              var token = localStorage.getItem(tokenName);
+              if (token) {
+                token = config.authHeader === 'Authorization' ? 'Bearer ' + token : token;
+                httpConfig.headers[config.authHeader] = token;
+              }
+              return httpConfig;
+            },
+            responseError: function(response) {
+              return $q.reject(response);
             }
-            return httpConfig;
-          },
-          responseError: function(response) {
-            if (response.status === 401) {
-              localStorage.removeItem(tokenName);
-            }
-            return $q.reject(response);
-          }
-        };
-      }]);
+          };
+        }]);
+      }
     }]);
 
 })(window, window.angular);
+
+// Base64.js Polyfill (@davidchambers)
+(function() {
+  var object = typeof exports != 'undefined' ? exports : this;
+  var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+
+  function InvalidCharacterError(message) {
+    this.message = message;
+  }
+  InvalidCharacterError.prototype = new Error;
+  InvalidCharacterError.prototype.name = 'InvalidCharacterError';
+
+  object.btoa || (
+    object.btoa = function(input) {
+      var str = String(input);
+      for (var block, charCode, idx = 0, map = chars, output = ''; str.charAt(idx | 0) || (map = '=', idx % 1); output += map.charAt(63 & block >> 8 - idx % 1 * 8)) {
+        charCode = str.charCodeAt(idx += 3 / 4);
+        if (charCode > 0xFF) {
+          throw new InvalidCharacterError("'btoa' failed: The string to be encoded contains characters outside of the Latin1 range.");
+        }
+        block = block << 8 | charCode;
+      }
+      return output;
+    });
+
+  object.atob || (
+    object.atob = function(input) {
+      var str = String(input).replace(/=+$/, '');
+      if (str.length % 4 == 1) {
+        throw new InvalidCharacterError("'atob' failed: The string to be decoded is not correctly encoded.");
+      }
+      for (var bc = 0, bs, buffer, idx = 0, output = ''; buffer = str.charAt(idx++); ~buffer && (bs = bc % 4 ? bs * 64 + buffer : buffer, bc++ % 4) ? output += String.fromCharCode(255 & bs >> (-2 * bc & 6)) : 0) {
+        buffer = chars.indexOf(buffer);
+      }
+      return output;
+    });
+}());
