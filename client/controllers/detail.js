@@ -5,6 +5,7 @@ angular.module('Instagram')
 
     API.getMediaById(mediaId).success(function(media) {
       $scope.photo = media;
+      $scope.hasLiked = media.user_has_liked;
     });
 
     $scope.like = function() {
